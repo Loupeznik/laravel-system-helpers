@@ -1,4 +1,4 @@
-echo "Artisan model creator"
+echo "Artisan model generator"
 echo "Created by Loupeznik (https://github.com/Loupeznik)"
 
 if (!(Test-Path ".\artisan" -PathType Leaf)) {
