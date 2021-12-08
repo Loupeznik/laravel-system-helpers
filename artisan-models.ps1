@@ -1,42 +1,46 @@
 echo "Artisan model generator"
-echo "Created by Loupeznik (https://github.com/Loupeznik)"
+echo "Created by Loupeznik (https://github.com/Loupeznik) contribued by Ghulam-Farid (https://github.com/Ghulam-Farid)"
 
 if (!(Test-Path ".\artisan" -PathType Leaf)) {
-  Write-Host "ERROR: Artisan not found in this directory" -ForegroundColor red
-  Write-Host "Exiting" -ForegroundColor red
+  echo "ERROR: Artisan not found in this directory"
   exit
 }
 
 $input = Read-Host -Prompt "Enter model names separated by commas"
 
 if (!$input) {
-  Write-Host "ERROR: No model names entered" -ForegroundColor red
-  Write-Host "Exiting" -ForegroundColor red
+  echo "ERROR: No model names entered"
   exit
 }
-
-echo "Enter switches to create additional classes, like controllers, no switch will be used if the field is left blank"
-echo "Available switches m - migration, s - seeder, f - factory, c - controller (-msfc)"
-$switch = Read-Host -Prompt "Enter the desired switches"
-
-if (!$switch) {
-  Write-Host "WARNING: No switch selected" -ForegroundColor yellow
-} else {
-  if ($switch -notcontains "-") {
-    $switch = "-" + $switch
-  }
-  if ($switch -notmatch "[mscf]") {
-    Write-Host "ERROR: The switch can contain only [mscf] characters" -ForegroundColor red
-    Write-Host "Exiting" -ForegroundColor red
+else
+{
+  $input = $input -replace '\s',''
+  $input = $input -replace ',+',','
+  if ( $input -match '[!@#\$%\^&\*\(\)\.\{\}\[\]\?\|\+\=\-\/]' ){
+    echo "ERROR: Incorrect model names";
     exit
   }
 }
 
-$input = $input -replace '\s',''
+echo "Enter switches to create additional classes (like -msfc)"
+$switch = Read-Host -Prompt "Enter the desired switches"
+
+if (!$switch) {
+  echo "WARNING: No switch selected"
+} else {
+  if ($switch -notmatch "-") {
+    $switch = "-" + $switch
+  }
+  if ($switch -notmatch "[mscf]") {
+    echo "ERROR: The switch can contain only [mscf] characters"
+    exit
+  }
+}
+
 $switch = $switch -replace '\s',''
 $models = $input.Split(",")
 
 foreach ($model in $models) {
-  Write-Host "Creating model $model" -ForegroundColor green
+  echo "Creating model $model"
   php artisan make:model $model $switch
 }
